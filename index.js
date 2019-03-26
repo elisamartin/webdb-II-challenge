@@ -17,6 +17,19 @@ server.use(helmet());
 
 // endpoints here
 // POST /api/zoos
+server.post('/api/zoos', (req, res) => {
+	db('zoos')
+		.insert(req.body)
+		.then((arrayOfIds) => {
+			db('zoos').where({ id: arrayOfIds[0] });
+		})
+		.then((id) => {
+			res.status(201).json(id);
+		})
+		.catch((err) => {
+			res.status(500).json({ message: 'Something went wrong' });
+		});
+});
 
 // GET /api/zoos
 server.get('/api/zoos', async (req, res) => {
@@ -43,7 +56,30 @@ server.get('/api/zoos/:id', async (req, res) => {
 });
 
 // DELETE /api/zoos/:id
+server.delete('/api/zoos/:id', (req, res) => {
+	db('zoos')
+		.where({ id: req.params.id })
+		.del()
+		.then(() => {
+			res.status(200).json('Deleted!');
+		})
+		.catch((err) => {
+			res.status(500).json(err);
+		});
+});
+
 // PUT /api/zoos/:id
+server.put('/api/zoos/:id', (req, res) => {
+	db('zoos')
+		.where({ id: req.params.id })
+		.update(req.body)
+		.then(() => {
+			res.status(200).json('Updated!');
+		})
+		.catch((err) => {
+			res.status(500).json({ message: 'Unable to update zoo' });
+		});
+});
 
 const port = 3300;
 server.listen(port, function() {
