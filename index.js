@@ -2,8 +2,10 @@ const express = require('express');
 const helmet = require('helmet');
 
 const server = express();
+const cors = require('cors');
 
 server.use(express.json());
+server.use(cors());
 server.use(helmet());
 
 const zooRouter = require('./data/routes/zooRouter');
